@@ -1,0 +1,35 @@
+.show-thumbnail {
+  max-width: 64;
+}
+
+.search-bar {
+  margin: 20px;
+  text-align: center;
+}
+
+.search-bar input {
+  width: 75%;
+}
+
+.serie-detail {
+  
+  padding: 10px;
+
+}
+
+.details {
+  margin-bottom: 10px;
+}
+
+.list-group-item {
+  cursor: pointer;
+}
+
+.list-group-item:hover {
+  background-color: #eee;
+}
+
+.genre span {
+  margin-right: 5px;
+  font-size: 90%;
+}
