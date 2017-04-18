@@ -1,15 +1,51 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import AsyncGet from './utils/async_get';
+import SearchBar from './components/search_bar';
+import TVMazeList from './components/tvmaze_list';
+import TVMazeDetail from './components/tvmaze_detail';
+import _ from 'lodash';
+const ROOT_URL = 'http://api.tvmaze.com';
 
-import App from './components/app';
-import reducers from './reducers';
 
-const createStoreWithMiddleware = applyMiddleware()(createStore);
+class App extends Component {
+  constructor(props) {
+    super(props);
 
-ReactDOM.render(
-  <Provider store={createStoreWithMiddleware(reducers)}>
-    <App />
-  </Provider>
-  , document.querySelector('.container')); 
+    this.state = {
+      series: [],
+      selectedSerie: null
+    };
+
+    this.serieSearch('girls');
+  }
+
+  serieSearch(query) {
+    AsyncGet(`${ROOT_URL}/search/shows?q=${query}`)
+      .then(
+          series => {this.setState(
+            {
+              series: series,
+              selectedSerie: series[0]
+            }
+          )},
+          error => console.log(error)
+        );
+  }
+
+  render () {
+    const videoSearch = _.debounce((query) => {this.serieSearch(query)}, 300);
+
+    return (
+      <div>
+        <SearchBar onSearchQueryChanged={videoSearch} />
+        <TVMazeDetail serie={this.state.selectedSerie} />
+        <TVMazeList
+         onSerieSelect={selectedSerie => this.setState({selectedSerie})}
+         series={this.state.series} />
+      </div>
+    );
+  }
+};
+
+ReactDOM.render(<App />, document.querySelector('.container'));
